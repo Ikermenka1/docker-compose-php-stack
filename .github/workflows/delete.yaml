@@ -4,24 +4,12 @@ on:
     # schedule:
     # - cron: "*/5 * * * *"
 
-# env:
-#   REGISTRY: ghcr.io
-#   IMAGE_NAME: ${{ github.repository }}
-
 jobs:
  delete-image:
     runs-on: ubuntu-latest
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     include:
-    #       - dockerfile: ./php-fpm/Dockerfile
-    #         image: ghcr.io/ikermenka1/phpfpm
-    #       # - dockerfile: ./src/Dockerfile-dril4net-distribution
-    #       #   image: ghcr.io/ikermenka1/phpfpm
-    permissions:
-      contents: read
-      packages: write
+    # permissions:
+    #   contents: read
+    #   packages: write
 
     steps:
       - name: Delete images
@@ -30,6 +18,6 @@ jobs:
           token: ${{ secrets.TOKEN }}
           user: ikermenka1
           type: container
-          keep: 1
+          keep: 0
           names: |
             phpfpm
