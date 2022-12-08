@@ -55,11 +55,11 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           fail-build: false
           severity-cutoff: critical
-          output-format: sarif
-      - name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          output-format: Ikermenka1/gh_actions_build_scan_push_delete/scanreport.json
+      # - name: upload Anchore scan SARIF report
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Push images
         uses: docker/build-push-action@v3
