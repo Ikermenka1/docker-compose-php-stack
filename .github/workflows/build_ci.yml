@@ -1,95 +1,3 @@
-# name: Create and publish a docker image
-
-# on: push
-
-# env:
-#   REGISTRY: ghcr.io
-#   IMAGE_NAME: phpfpm
-#   REPO: docker-compose-php-stack
-#   TARGET_IMAGE: phpfpm
-
-# jobs:
-#   build-and-push-image:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       packages: write
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
-
-#       - name: Log in to the Container registry
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ env.REGISTRY }}
-#           ikermenka1: ${{ github.actor }}
-#           password: ${{ secrets.TOKEN }}
-
-#       # - name: Extract metadata (tags, labels) for Docker
-#       #   id: meta
-#       #   uses: docker/metadata-action@v4
-#       #   with:
-#       #     images: ${{ env.REGISTRY }}/phpfpm
-#       #     tags: |
-#       #       type=ref,event=branch
-#       #       type=sha
-
-#       # - name: Build and push Docker image
-#       #   run: |
-#       #     docker compose -f docker-compose.yml build ${{ env.IMAGE_NAME }}
-#       #     docker push ${{ env.IMAGE_NAME }}
-#       # - name: Docker-compose action
-#       #   uses: isbang/compose-action@v1.4.0
-#       #   with:
-#       #     compose-file: "./docker-compose.yml"
-#       #     down-flags: "--volumes"
-#       #     services: ${{ env.IMAGE_NAME }}
-
-#       - name: push Docker image
-#         run: |
-#           docker compose -f docker-compose.yml build
-#           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-#       # - name: publish
-#       #   uses: pennsignals/publish_docker-compose@v0.1.0
-#       #   with:
-#       #     version: '0.2.6-rc.1' # optional
-#       #     docker_compose: 'docker-compose.build.yml' # required
-#       #     repo_token: "${{ secrets.TOKEN }}"
-
-
-# #works
-# name: Create and publish a Docker image
-
-# on: push
-
-# env:
-#   REGISTRY: ghcr.io
-
-# jobs:
-#   build-and-push-image:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       packages: write
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
-
-#       - name: Log in to the Container registry
-#         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-#         with:
-#           registry: ${{ env.REGISTRY }}
-#           ikermenka1: ${{ github.actor }}
-#           password: ${{ secrets.GITHUB_TOKEN }}
-  
-#       - name: Build and push Docker image
-#         run: |
-#           docker compose -f docker-compose.yml build phpfpm
-#           docker tag docker.io/library/docker-compose-php-stack-phpfpm ${{ env.REGISTRY }}/ikermenka1/phpfpm:${{ github.run_number }}
-#           docker push ${{ env.REGISTRY }}/ikermenka1/phpfpm:${{ github.run_number }}   
-
 name: Build & publish docker images
 on: push
 
@@ -131,7 +39,6 @@ jobs:
           tags: |
             type=sha
 
-
       - name: Build Docker image
         uses: docker/build-push-action@v3
         with:
@@ -148,14 +55,11 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           fail-build: false
           severity-cutoff: critical
-          output-format: 
-
-      # - name: upload Anchore scan SARIF report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: ${{ steps.scan.outputs.sarif }}
-      # - name: Inspect action SARIF report
-      #   run: cat ${{ steps.scan.outputs.sarif }}
+          output-format: sarif
+      - name: upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Push images
         uses: docker/build-push-action@v3
